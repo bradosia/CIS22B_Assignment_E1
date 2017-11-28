@@ -24,7 +24,7 @@ using namespace std;
 **************************************************/
 class Car
 {
-private:
+protected:
 	string reportingMark;
 	int carNumber;
 	string kind;
@@ -34,11 +34,36 @@ public:
 	Car () { setup ("", 0, "other", false, "NONE"); } //default constructor
 	Car (const Car &CarObj) { setup (CarObj.reportingMark, CarObj.carNumber, CarObj.kind, CarObj.loaded, CarObj.destination); } //copy constructor
 	Car (string reportingMarkInit, int carNumberInit, string kindInit, bool loadedInit, string destinationInit) { setup (reportingMarkInit, carNumberInit, kindInit, loadedInit, destinationInit); } //other constructor
-	~Car () {} // destructor
+	virtual ~Car () {} // destructor
 	void setup (string reportingMarkInit, int carNumberInit, string kindInit, bool loadedInit, string destinationInit);
 	void output ();
 	Car & Car::operator=(const Car & carB);
 	friend bool Car::operator==(const Car CarObj1, const Car CarObj2);
+	virtual void setKind (std::string kindInit);
+};
+
+/**************************************************
+** FreightCar class
+**************************************************/
+class FreightCar : public Car
+{
+public:
+	FreightCar () { setup ("", 0, "other", false, "NONE"); } //default constructor
+	FreightCar (string reportingMarkInit, int carNumberInit, string kindInit, bool loadedInit, string destinationInit) { setup (reportingMarkInit, carNumberInit, kindInit, loadedInit, destinationInit); } //other constructor
+	~FreightCar () {}
+	virtual void setKind (std::string kindInit);
+};
+
+/**************************************************
+** PassengerCar class
+**************************************************/
+class PassengerCar : public Car
+{
+public:
+	PassengerCar () { setup ("", 0, "other", false, "NONE"); } //default constructor
+	PassengerCar (string reportingMarkInit, int carNumberInit, string kindInit, bool loadedInit, string destinationInit) { setup (reportingMarkInit, carNumberInit, kindInit, loadedInit, destinationInit); } //other constructor
+	~PassengerCar () {}
+	virtual void setKind (std::string kindInit);
 };
 
 /**************************************************
@@ -92,26 +117,12 @@ void input (StringOfCars & StringOfCarsObj);
 
 int main ()
 {
-	// Test the Car operator=   function. 
-	cout << "TEST 1" << endl;
-	Car car1 ("SP", 34567, "business", true, "Salt Lake City");
-	Car car2;
-	car2 = car1;
+	Car car1 ("SLSF", 46871, "wrecker", true, "Memphis");
+	car1.output ();
+	FreightCar car2 ("SLSF", 46871, "wrecker", true, "Memphis");
 	car2.output ();
-	// Test the StringOfCar push function.
-	cout << "TEST 2" << endl;
-	StringOfCars string1;
-	input (string1);
-	cout << "STRING 1" << endl;
-	string1.output ();
-	// Test the StringOfCars pop function. 
-	cout << "TEST 3" << endl;
-	Car car3;
-	string1.pop (car3);
-	cout << "CAR 3" << endl;
+	PassengerCar car3 ("SLSF", 46871, "wrecker", true, "Memphis");
 	car3.output ();
-	cout << "STRING 1" << endl;
-	string1.output ();
 	system ("pause");
 	return 0;
 }
@@ -127,9 +138,10 @@ void Car::setup (string reportingMarkInit, int carNumberInit, string kindInit, b
 {
 	reportingMark = reportingMarkInit;
 	carNumber = carNumberInit;
-	kind = kindInit;
+	(*this).setKind (kindInit);
 	loaded = loadedInit;
 	destination = destinationInit;
+
 }
 
 /********************* Car::output ****************
@@ -157,6 +169,51 @@ Car & Car::operator=(const Car & carB)
 
 	return *this;
 }
+
+/********************* Car::setKind ***************
+** Sets the car kind
+**************************************************/
+void Car::setKind (std::string kindInit)
+{
+	kind = "other";
+	if (kindInit == "business" || kindInit == "maintenance")
+	{
+		kind = kindInit;
+	}
+}
+
+/**************************************************
+** FreightCar class method definitions
+**************************************************/
+
+/**************** FreightCar::setKind *************
+** Sets the car kind
+**************************************************/
+void FreightCar::setKind (std::string kindInit)
+{
+	kind = "otherFreight";
+	if (kindInit == "box" || kindInit == "tank" || kindInit == "flat")
+	{
+		kind = kindInit;
+	}
+}
+
+/**************************************************
+** PassengerCar class method definitions
+**************************************************/
+
+/**************** FreightCar::setKind *************
+** Sets the car kind
+**************************************************/
+void PassengerCar::setKind (std::string kindInit)
+{
+	kind = "otherPassenger";
+	if (kindInit == "chair" || kindInit == "sleeper")
+	{
+		kind = kindInit;
+	}
+}
+
 
 /**************************************************
 ** StringOfCars class method definitions
